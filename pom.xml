@@ -58,7 +58,7 @@
                             <goal>copy-resources</goal>
                         </goals>
                         <configuration>
-                            <outputDirectory>F:\bteg\testserver\plugins</outputDirectory>
+                            <outputDirectory>${basedir}</outputDirectory>
                             <resources>
                                 <resource>
                                     <directory>${basedir}/target</directory>
@@ -95,7 +95,7 @@
         </repository>
         <repository>
             <id>nachwahl-repo</id>
-            <url>https://maven.nachwahl.dev/</url>
+            <url>https://mvn.robinferch.me/</url>
         </repository>
     </repositories>
 
