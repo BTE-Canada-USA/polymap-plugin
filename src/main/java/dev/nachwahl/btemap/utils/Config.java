@@ -17,6 +17,7 @@ public class Config {
     private JavaPlugin plugin;
 
     private YamlDocument connections;
+    private YamlDocument settings;
 
     public Config(JavaPlugin plugin) {
         this.plugin = plugin;
@@ -24,8 +25,13 @@ public class Config {
     }
 
     @Nullable
-    public YamlDocument getConnectionsConfig() {
-        return connections;
+    public YamlDocument getConnections() {
+        return this.connections;
+    }
+
+    @Nullable
+    public YamlDocument getSettings() {
+        return this.settings;
     }
 
     @Nullable
