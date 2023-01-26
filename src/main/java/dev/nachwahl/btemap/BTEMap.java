@@ -11,7 +11,6 @@ import dev.nachwahl.btemap.projection.GeographicProjection;
 import dev.nachwahl.btemap.projection.ModifiedAirocean;
 import dev.nachwahl.btemap.projection.ScaleProjection;
 import dev.nachwahl.btemap.utils.FileBuilder;
-import dev.nachwahl.btemap.utils.GetLocation;
 import dev.nachwahl.btemap.utils.SocketIO;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -20,7 +19,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.ArrayList;
 import java.util.UUID;
-import java.util.logging.Level;
 
 public final class BTEMap extends JavaPlugin {
 
@@ -51,7 +49,6 @@ public final class BTEMap extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new LeaveEvent(this), this);
 
         this.socketIO = new SocketIO(dbConfig.getString("hostname"), dbConfig.getInt("port"), dbConfig.getString("token"));
-        GetLocation loc = new GetLocation();
         Bukkit.getScheduler().scheduleSyncRepeatingTask(this, () -> {
 
 
