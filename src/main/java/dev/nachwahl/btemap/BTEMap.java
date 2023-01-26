@@ -10,6 +10,7 @@ import dev.nachwahl.btemap.listeners.LeaveEvent;
 import dev.nachwahl.btemap.projection.GeographicProjection;
 import dev.nachwahl.btemap.projection.ModifiedAirocean;
 import dev.nachwahl.btemap.projection.ScaleProjection;
+import dev.nachwahl.btemap.utils.Config;
 import dev.nachwahl.btemap.utils.FileBuilder;
 import dev.nachwahl.btemap.utils.SocketIO;
 import org.bukkit.Bukkit;
@@ -22,6 +23,8 @@ import java.util.UUID;
 
 public final class BTEMap extends JavaPlugin {
 
+    private Config config;
+
     private MySQLConnector sqlConnector;
     private FileBuilder dbConfig;
     private SocketIO socketIO;
@@ -29,6 +32,9 @@ public final class BTEMap extends JavaPlugin {
     @Override
     public void onEnable() {
         this.getServer().getMessenger().registerOutgoingPluginChannel(this, "bteplugin");
+
+        this.config = new Config(this);
+
         dbConfig = new FileBuilder("plugins/PolyMap", "mysql.yml")
                 .addDefault("mysql.host", "localhost")
                 .addDefault("mysql.port", 3306)
