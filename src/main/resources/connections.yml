@@ -1,0 +1,15 @@
+## File version (do NOT edit)
+file-version: 1
+
+## MySQL connection
+mysql:
+  host: localhost
+  port: 3306
+  database: map
+  username: map
+  password:
+
+## Socket IO connection
+hostname: localhost   # FQDN or IP where the socket is hosted
+port: 8899            # Port for the socket (default 8899). If proxy use 433 (Encrypted) or 80 (Un-encrypted)
+token:                # Token for communication (must be same here and on map backend .env file)
