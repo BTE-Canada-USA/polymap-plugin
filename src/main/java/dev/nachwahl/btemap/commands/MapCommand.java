@@ -39,12 +39,12 @@ public class MapCommand extends BaseCommand {
     @Dependency
     private BTEMap plugin;
 
-    private YamlDocument settings = plugin.getPluginConfig().getSettings();
-    private String prefix = settings.getString("prefix");
-
     @Subcommand("link")
     @CommandPermission("map.link")
     public void onLink(CommandSender sender) {
+        YamlDocument settings = plugin.getPluginConfig().getSettings();
+        String prefix = settings.getString("prefix");
+
         sender.sendMessage(
             new MessageBuilder(settings, "responses.map.link.loading")
                 .setPrefix(prefix)
@@ -91,6 +91,7 @@ public class MapCommand extends BaseCommand {
                 sender.sendMessage(
                     new MessageBuilder(settings, "responses.map.link.code")
                         .setPrefix(prefix)
+                        .replace("code", String.valueOf(code))
                         .replace(settings, "url", "map-url")
                         .build()
                 );
@@ -103,6 +104,9 @@ public class MapCommand extends BaseCommand {
     @Subcommand("create")
     @CommandPermission("map.create")
     public void onCreate(CommandSender sender){
+        YamlDocument settings = plugin.getPluginConfig().getSettings();
+        String prefix = settings.getString("prefix");
+
         double lat = 0.0;
         double lon = 0.0;
         String city = "n/A";

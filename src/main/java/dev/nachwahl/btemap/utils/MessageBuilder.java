@@ -18,6 +18,8 @@ public class MessageBuilder {
 
     public MessageBuilder(String original) {
         this.message = original;
+        this.prefix = "";
+        this.suffix = "";
     }
 
     public MessageBuilder replace(YamlDocument yml, String key, String valueRoute) {

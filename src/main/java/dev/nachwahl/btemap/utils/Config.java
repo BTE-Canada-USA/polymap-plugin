@@ -22,6 +22,7 @@ public class Config {
     public Config(JavaPlugin plugin) {
         this.plugin = plugin;
         this.connections = createConfig("connections.yml", false);
+        this.settings = createConfig("settings.yml", false);
     }
 
     @Nullable

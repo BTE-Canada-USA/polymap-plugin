@@ -5,7 +5,7 @@ file-version: 1
 map-url: 'https://map.btecanada.net/'
 
 ## Response Prefix (Name of plugin)
-prefix: '§b§lBTEG §7» '
+prefix: '§b§lBTE MAP §7» '
 
 ## Command Responses
 responses:
