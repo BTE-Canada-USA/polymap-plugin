@@ -1,7 +1,6 @@
 package dev.nachwahl.btemap.commands;
 
 import co.aikar.commands.BaseCommand;
-import co.aikar.commands.CommandHelp;
 import co.aikar.commands.annotation.*;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
@@ -12,12 +11,15 @@ import com.sk89q.worldedit.function.operation.Operations;
 import com.sk89q.worldedit.function.visitor.RegionVisitor;
 import com.sk89q.worldedit.regions.Region;
 import com.sk89q.worldedit.regions.RegionOperationException;
+
+import dev.dejvokep.boostedyaml.YamlDocument;
 import dev.nachwahl.btemap.BTEMap;
+import dev.nachwahl.btemap.utils.MessageBuilder;
+
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import javax.xml.transform.Result;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -40,7 +42,14 @@ public class MapCommand extends BaseCommand {
     @Subcommand("link")
     @CommandPermission("map.link")
     public void onLink(CommandSender sender) {
-        sender.sendMessage("§b§lBTEG §7» Please wait while we create your link code.");
+        YamlDocument settings = plugin.getPluginConfig().getSettings();
+        String prefix = settings.getString("prefix");
+
+        sender.sendMessage(
+            new MessageBuilder(settings, "responses.map.link.loading")
+                .setPrefix(prefix)
+                .build()
+        );
         Bukkit.getScheduler().runTaskAsynchronously(this.plugin, new Runnable() {
             @Override
             public void run() {
@@ -50,7 +59,11 @@ public class MapCommand extends BaseCommand {
                     checkLinkedPs.setString(1, ((Player) sender).getUniqueId().toString());
                     ResultSet checkLinkedRs = checkLinkedPs.executeQuery();
                     if(checkLinkedRs.next()) {
-                        sender.sendMessage("§b§lBTEG §7» §cThis account is already linked.");
+                        sender.sendMessage(
+                            new MessageBuilder(settings, "responses.map.link.already-linked")
+                                .setPrefix(prefix)
+                                .build()
+                        );
                         return;
                     } else {
 
@@ -68,10 +81,20 @@ public class MapCommand extends BaseCommand {
 
                 } catch (SQLException throwables) {
                     throwables.printStackTrace();
-                    sender.sendMessage("§b§lBTEG §7» §cAn error occurred while creating your code");
+                    sender.sendMessage(
+                        new MessageBuilder(settings, "responses.map.link.error")
+                            .setPrefix(prefix)
+                            .build()
+                    );
                     return;
                 }
-                sender.sendMessage("§b§lBTEG §7» Your code is §b" + code + "§7. Please enter it on map.bte-germany.de");
+                sender.sendMessage(
+                    new MessageBuilder(settings, "responses.map.link.code")
+                        .setPrefix(prefix)
+                        .replace("code", String.valueOf(code))
+                        .replace(settings, "url", "map-url")
+                        .build()
+                );
 
             }
         });
@@ -81,34 +104,58 @@ public class MapCommand extends BaseCommand {
     @Subcommand("create")
     @CommandPermission("map.create")
     public void onCreate(CommandSender sender){
+        YamlDocument settings = plugin.getPluginConfig().getSettings();
+        String prefix = settings.getString("prefix");
+
         double lat = 0.0;
         double lon = 0.0;
         String city = "n/A";
         Player player = (Player) sender;
         LocalSession sm = WorldEdit.getInstance().getSessionManager().findByName(player.getName());
         if(sm == null) {
-            sender.sendMessage("§b§lBTEG §7» §cPlease select a region via WorldEdit first.");
+            sender.sendMessage(
+                new MessageBuilder(settings, "responses.map.create.please-select")
+                    .setPrefix(prefix)
+                    .build()
+            );
             return;
         }
         Region region = null;
         try {
             region = sm.getSelection(WorldEdit.getInstance().getSessionManager().findByName(player.getName()).getSelectionWorld());
         } catch (IncompleteRegionException e) {
-            sender.sendMessage("§b§lBTEG §7» §cPlease select a region via WorldEdit first.");
+            sender.sendMessage(
+                new MessageBuilder(settings, "responses.map.create.please-select")
+                    .setPrefix(prefix)
+                    .build()
+            );
             return;
         }
         if(region == null) {
-            sender.sendMessage("§b§lBTEG §7» §cPlease select a region via WorldEdit first.");
+            sender.sendMessage(
+                new MessageBuilder(settings, "responses.map.create.please-select")
+                    .setPrefix(prefix)
+                    .build()
+            );
             return;
         }
         List<BlockVector2D> poly = null;
         try {
             poly = region.polygonize(50);
         } catch (IllegalArgumentException e) {
-            sender.sendMessage("§b§lBTEG §7» §cPlease select you region with under 50 points");
+            sender.sendMessage(
+                new MessageBuilder(settings, "responses.map.create.too-large")
+                    .setPrefix(prefix)
+                    .replace("size", "50")
+                    .build()
+            );
             return;
         }
-        player.sendMessage("§b§lBTEG §7» One moment please...");
+        sender.sendMessage(
+            new MessageBuilder(settings, "responses.map.create.loading")
+                .setPrefix(prefix)
+                .build()
+        );
 
 
 
@@ -201,8 +248,18 @@ public class MapCommand extends BaseCommand {
             } catch (SQLException throwables) {
                 throwables.printStackTrace();
             }
-            sender.sendMessage("§b§lBTEG §7» Your region was created successfully and is now visible on the map.");
-            sender.sendMessage("§b§lBTEG §7» You can see your region by clicking on this link: https://map.bte-germany.de/?region=" + uuid.toString() + "&details=true");
+
+            sender.sendMessage(
+                new MessageBuilder(settings, "responses.map.create.success")
+                    .setPrefix(prefix)
+                    .build()
+            );
+            sender.sendMessage(
+                new MessageBuilder(settings, "responses.map.create.see-online")
+                    .setPrefix(prefix)
+                    .replace(settings, "url", "map-url")
+                    .build()
+            );
         });
     }
 

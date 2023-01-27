@@ -1,24 +1,15 @@
 package dev.nachwahl.btemap.utils;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import dev.nachwahl.btemap.BTEMap;
-import dev.nachwahl.btemap.projection.GeographicProjection;
-import dev.nachwahl.btemap.projection.ModifiedAirocean;
-import dev.nachwahl.btemap.projection.ScaleProjection;
 import io.socket.client.IO;
 import io.socket.client.Socket;
 import io.socket.emitter.Emitter;
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
-import java.lang.reflect.Array;
 import java.net.URISyntaxException;
-import java.util.Locale;
 import java.util.UUID;
 
 import static java.util.Collections.singletonMap;

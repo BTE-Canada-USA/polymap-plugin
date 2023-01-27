@@ -39,7 +39,6 @@ public class ConformalEstimate extends Airocean {
         double[][] ys = new double[xs.length][];
 
         try {
-            //is = new FileInputStream("../resources/assets/terra121/data/conformal.txt");
             is = getClass().getClassLoader().getResourceAsStream("assets/btegmap/data/conformal.txt");
             Scanner sc = new Scanner(is);
 
@@ -60,6 +59,7 @@ public class ConformalEstimate extends Airocean {
                 }
             }
 
+            sc.close();
             is.close();
         }catch (IOException e) {
             System.err.println("Can't load conformal: "+e);

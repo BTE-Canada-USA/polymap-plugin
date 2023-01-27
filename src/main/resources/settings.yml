@@ -1,0 +1,25 @@
+## File version (do NOT edit)
+file-version: 1
+
+## Map URL
+map-url: 'https://map.btecanada.net/'
+
+## Response Prefix (Name of plugin)
+prefix: '§b§lBTE MAP §7» '
+
+## Command Responses
+responses:
+  map:
+    link:
+      loading: 'Please wait while we create your link code.'
+      already-linked: '§cThis account is already linked.'
+      code: 'Your code is §b{code}§7. Please enter it on {url}'
+      error: '§cAn error occurred while creating your code'
+    create:
+      loading: 'One moment please...'
+      please-select: '§cPlease select a region via WorldEdit first.'
+      too-large: '§cPlease select you region with under {size} points'
+      success: 'Your region was created successfully and is now visible on the map.'
+      see-online: 'You can see your region by clicking on this link: {url}'
+
+

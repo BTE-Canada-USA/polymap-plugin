@@ -4,14 +4,15 @@ package dev.nachwahl.btemap;
 import co.aikar.commands.PaperCommandManager;
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
+
+import dev.dejvokep.boostedyaml.YamlDocument;
 import dev.nachwahl.btemap.commands.MapCommand;
 import dev.nachwahl.btemap.database.MySQLConnector;
 import dev.nachwahl.btemap.listeners.LeaveEvent;
 import dev.nachwahl.btemap.projection.GeographicProjection;
 import dev.nachwahl.btemap.projection.ModifiedAirocean;
 import dev.nachwahl.btemap.projection.ScaleProjection;
-import dev.nachwahl.btemap.utils.FileBuilder;
-import dev.nachwahl.btemap.utils.GetLocation;
+import dev.nachwahl.btemap.utils.Config;
 import dev.nachwahl.btemap.utils.SocketIO;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -20,38 +21,42 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.ArrayList;
 import java.util.UUID;
-import java.util.logging.Level;
 
 public final class BTEMap extends JavaPlugin {
 
+    private Config config;
+
     private MySQLConnector sqlConnector;
-    private FileBuilder dbConfig;
     private SocketIO socketIO;
 
     @Override
     public void onEnable() {
         this.getServer().getMessenger().registerOutgoingPluginChannel(this, "bteplugin");
-        dbConfig = new FileBuilder("plugins/PolyMap", "mysql.yml")
-                .addDefault("mysql.host", "localhost")
-                .addDefault("mysql.port", 3306)
-                .addDefault("mysql.database", "map")
-                .addDefault("mysql.username", "root")
-                .addDefault("mysql.password", "")
-                .addDefault("hostname", "localhost")
-                .addDefault("port", 8899)
-                .addDefault("token", "")
-                .copyDefaults(true).save();
-        sqlConnector = new MySQLConnector(dbConfig.getString("mysql.host"), dbConfig.getInt("mysql.port"),
-                dbConfig.getString("mysql.database"), dbConfig.getString("mysql.username"), dbConfig.getString("mysql.password"));
+
+        this.config = new Config(this);
+        YamlDocument conn = this.config.getConnections();
+
+        sqlConnector = new MySQLConnector(
+            conn.getString("mysql.host"), 
+            conn.getInt("mysql.port"),
+            conn.getString("mysql.database"), 
+            conn.getString("mysql.username"), 
+            conn.getString("mysql.password")
+        );
         sqlConnector.connect();
+
         PaperCommandManager manager = new PaperCommandManager(this);
         manager.enableUnstableAPI("help");
         manager.registerCommand(new MapCommand());
 
         Bukkit.getPluginManager().registerEvents(new LeaveEvent(this), this);
 
-        this.socketIO = new SocketIO(dbConfig.getString("hostname"), dbConfig.getInt("port"), dbConfig.getString("token"));
-        GetLocation loc = new GetLocation();
+        this.socketIO = new SocketIO(
+            conn.getString("hostname"),
+            conn.getInt("port"),
+            conn.getString("token")
+        );
+        
         Bukkit.getScheduler().scheduleSyncRepeatingTask(this, () -> {
 
 
@@ -69,12 +74,12 @@ public final class BTEMap extends JavaPlugin {
         }, 0L, 20L);
     }
 
-    public MySQLConnector getSqlConnector() {
-        return sqlConnector;
+    public Config getPluginConfig() {
+        return this.config;
     }
 
-    public FileBuilder getDbConfig() {
-        return dbConfig;
+    public MySQLConnector getSqlConnector() {
+        return sqlConnector;
     }
 
     @Override
